@@ -38,3 +38,10 @@ func (db *Database) ProtoKV(key string) *ProtoKV {
 		key: fmt.Sprintf("%s:%s", db.app, key),
 	}
 }
+
+func (db *Database) ProtoHash(key string) *ProtoHash {
+	return &ProtoHash{
+		db:  db,
+		key: fmt.Sprintf("%s:%s", db.app, key),
+	}
+}

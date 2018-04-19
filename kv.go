@@ -23,6 +23,15 @@ func (kv *StringKV) Get() (string, error) {
 	return result, nil
 }
 
+func (kv *StringKV) Exists() (bool, error) {
+	result, err := kv.db.sess.Exists(kv.key).Result()
+	if err != nil {
+		return false, errors.Trace(err)
+	}
+
+	return result == 1, nil
+}
+
 type ProtoKV struct {
 	db  *Database
 	key string
@@ -44,4 +53,13 @@ func (kv *ProtoKV) Get(value proto.Message) error {
 	}
 
 	return errors.Trace(proto.Unmarshal([]byte(result), value))
+}
+
+func (kv *ProtoKV) Exists() (bool, error) {
+	result, err := kv.db.sess.Exists(kv.key).Result()
+	if err != nil {
+		return false, errors.Trace(err)
+	}
+
+	return result == 1, nil
 }

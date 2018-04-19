@@ -24,3 +24,17 @@ func (db *Database) Set(key string) *Set {
 		key: fmt.Sprintf("%s:%s", db.app, key),
 	}
 }
+
+func (db *Database) StringKV(key string) *StringKV {
+	return &StringKV{
+		db:  db,
+		key: fmt.Sprintf("%s:%s", db.app, key),
+	}
+}
+
+func (db *Database) ProtoKV(key string) *ProtoKV {
+	return &ProtoKV{
+		db:  db,
+		key: fmt.Sprintf("%s:%s", db.app, key),
+	}
+}

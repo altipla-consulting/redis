@@ -45,3 +45,12 @@ func (db *Database) ProtoHash(key string) *ProtoHash {
 		key: fmt.Sprintf("%s:%s", db.app, key),
 	}
 }
+
+func (db *Database) Queue(key string) *Queue {
+	return &Queue{
+		db:            db,
+		queueKey:      fmt.Sprintf("%s:%s", db.app, key),
+		processingKey: fmt.Sprintf("%s:%s:processing", db.app, key),
+		tasksKey:      fmt.Sprintf("%s:%s:tasks", db.app, key),
+	}
+}

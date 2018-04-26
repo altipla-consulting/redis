@@ -29,7 +29,7 @@ func (hash *ProtoHash) GetMulti(keys []string, result interface{}) error {
 		return errors.Errorf("redis: expected a pointer to a slice for the result, received %T", result)
 	}
 
-	dest := reflect.MakeSlice(rt, 0, 0)
+	dest := reflect.MakeSlice(rt.Elem(), 0, 0)
 
 	redisResult, err := hash.db.sess.HMGet(hash.key, keys...).Result()
 	if err != nil {

@@ -31,14 +31,23 @@ func (hash *ProtoHash) GetMulti(keys []string, result interface{}) error {
 
 	dest := reflect.MakeSlice(rt.Elem(), 0, 0)
 
+	var merr MultiError
+
 	redisResult, err := hash.db.sess.HMGet(hash.key, keys...).Result()
 	if err != nil {
 		return errors.Trace(err)
 	}
 	for _, item := range redisResult {
-		model := reflect.New(rt.Elem().Elem())
-		if err := proto.Unmarshal([]byte(item.(string)), model.Interface().(proto.Message)); err != nil {
-			return errors.Trace(err)
+		var model reflect.Value
+		if item == nil {
+			model = reflect.Zero(rt.Elem().Elem())
+			merr = append(merr, ErrNoSuchEntity)
+		} else {
+			model = reflect.New(rt.Elem().Elem())
+			if err := proto.Unmarshal([]byte(item.(string)), model.Interface().(proto.Message)); err != nil {
+				return errors.Trace(err)
+			}
+			merr = append(merr, nil)
 		}
 
 		dest = reflect.Append(dest, model)
@@ -46,6 +55,9 @@ func (hash *ProtoHash) GetMulti(keys []string, result interface{}) error {
 
 	rv.Set(dest)
 
+	if merr.HasError() {
+		return merr
+	}
 	return nil
 }
 

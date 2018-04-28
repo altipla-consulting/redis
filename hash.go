@@ -53,7 +53,7 @@ func (hash *ProtoHash) GetMulti(keys []string, result interface{}) error {
 		dest = reflect.Append(dest, model)
 	}
 
-	rv.Set(dest)
+	rv.Elem().Set(dest)
 
 	if merr.HasError() {
 		return merr

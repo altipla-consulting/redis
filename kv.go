@@ -1,8 +1,6 @@
 package redis
 
 import (
-	"fmt"
-
 	"github.com/golang/protobuf/proto"
 	"github.com/juju/errors"
 )
@@ -27,33 +25,6 @@ func (kv *StringKV) Get() (string, error) {
 
 func (kv *StringKV) Exists() (bool, error) {
 	result, err := kv.db.sess.Exists(kv.key).Result()
-	if err != nil {
-		return false, errors.Trace(err)
-	}
-
-	return result == 1, nil
-}
-
-type Int64KV struct {
-	db  *Database
-	key int64
-}
-
-func (kv *Int64KV) Set(value int64) error {
-	return errors.Trace(kv.db.sess.Set(kv.db.sess.Set(kv.key, value, 0).Err())
-}
-
-func (kv *Int64KV) Get() (int64, error) {
-	result, err := kv.db.sess.Get(fmt.Sprintf("%d", kv.key).Int64()
-	if err != nil {
-		return nil, errors.Trace(err)
-	}
-	
-	return result, nil
-}
-
-func (kv *Int64KV) Exists() (bool, error) {
-	result, err := kv.db.sess.Exists(fmt.Sprintf("%d", kv.key).Result()
 	if err != nil {
 		return false, errors.Trace(err)
 	}

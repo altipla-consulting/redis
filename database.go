@@ -32,13 +32,6 @@ func (db *Database) StringKV(key string) *StringKV {
 	}
 }
 
-func (db *Database) Int64KV(key int64) *Int64KV {
-	return &Int64KV{
-		db:  db,
-		key: fmt.Sprintf("%s:%d", db.app, key),
-	}
-}
-
 func (db *Database) ProtoKV(key string) *ProtoKV {
 	return &ProtoKV{
 		db:  db,

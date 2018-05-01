@@ -43,7 +43,7 @@ func (hash *ProtoHash) GetMulti(keys []string, result interface{}) error {
 			model = reflect.Zero(rt.Elem().Elem())
 			merr = append(merr, ErrNoSuchEntity)
 		} else {
-			model = reflect.New(rt.Elem().Elem())
+			model = reflect.New(rt.Elem().Elem().Elem())
 			if err := proto.Unmarshal([]byte(item.(string)), model.Interface().(proto.Message)); err != nil {
 				return errors.Trace(err)
 			}

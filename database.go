@@ -32,10 +32,10 @@ func (db *Database) StringKV(key string) *StringKV {
 	}
 }
 
-func (db *Database) Int64KV(key int64) *Int64KV {
-	return &Int64KV{
+func (db *Database) Int32KV(key string) *Int32KV {
+	return &Int32KV{
 		db:  db,
-		key: fmt.Sprintf("%s:%d", db.app, key),
+		key: fmt.Sprintf("%s:%s", db.app, key),
 	}
 }
 

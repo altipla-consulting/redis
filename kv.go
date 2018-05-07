@@ -32,25 +32,25 @@ func (kv *StringKV) Exists() (bool, error) {
 	return result == 1, nil
 }
 
-type Int64KV struct {
+type Int32KV struct {
 	db  *Database
 	key string
 }
 
-func (kv *Int64KV) Set(value int64) error {
+func (kv *Int32KV) Set(value int32) error {
 	return errors.Trace(kv.db.sess.Set(kv.key, value, 0).Err())
 }
 
-func (kv *Int64KV) Get() (int64, error) {
+func (kv *Int32KV) Get() (int32, error) {
 	result, err := kv.db.sess.Get(kv.key).Int64()
 	if err != nil {
 		return 0, errors.Trace(err)
 	}
 
-	return result, nil
+	return int32(result), nil
 }
 
-func (kv *Int64KV) Exists() (bool, error) {
+func (kv *Int32KV) Exists() (bool, error) {
 	result, err := kv.db.sess.Exists(kv.key).Result()
 	if err != nil {
 		return false, errors.Trace(err)

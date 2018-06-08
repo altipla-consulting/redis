@@ -3,6 +3,7 @@ package redis
 import (
 	"reflect"
 
+	"github.com/go-redis/redis"
 	"github.com/golang/protobuf/proto"
 	"github.com/juju/errors"
 )
@@ -58,6 +59,23 @@ func (hash *ProtoHash) GetMulti(keys []string, result interface{}) error {
 	if merr.HasError() {
 		return merr
 	}
+	return nil
+}
+
+func (hash *ProtoHash) Get(key string, model proto.Message) error {
+	redisResult, err := hash.db.sess.HGet(hash.key, key).Result()
+	if err != nil {
+		if err == redis.Nil {
+			return errors.Trace(ErrNoSuchEntity)
+		}
+
+		return errors.Trace(err)
+	}
+
+	if err := proto.Unmarshal([]byte(redisResult), model); err != nil {
+		return errors.Trace(err)
+	}
+
 	return nil
 }
 

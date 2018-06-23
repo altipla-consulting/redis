@@ -61,3 +61,10 @@ func (db *Database) Queue(key string) *Queue {
 		tasksKey:      fmt.Sprintf("%s:%s:tasks", db.app, key),
 	}
 }
+
+func (db *Database) Counters(key string) *Counters {
+	return &Counters{
+		db:  db,
+		key: fmt.Sprintf("%s:%s", db.app, key),
+	}
+}

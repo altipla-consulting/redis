@@ -75,3 +75,7 @@ func (db *Database) BooleanKV(key string) *BooleanKV {
 		key: fmt.Sprintf("%s:%s", db.app, key),
 	}
 }
+
+func (db *Database) DirectClient() *redis.Client {
+	return db.sess
+}

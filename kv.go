@@ -90,3 +90,35 @@ func (kv *ProtoKV) Exists() (bool, error) {
 
 	return result == 1, nil
 }
+
+type BooleanKV struct {
+	db  *Database
+	key string
+}
+
+func (kv *BooleanKV) Set(value proto.Message) error {
+	bytes, err := proto.Marshal(value)
+	if err != nil {
+		return errors.Trace(err)
+	}
+
+	return errors.Trace(kv.db.sess.Set(kv.key, string(bytes), 0).Err())
+}
+
+func (kv *BooleanKV) Get(value proto.Message) error {
+	result, err := kv.db.sess.Get(kv.key).Result()
+	if err != nil {
+		return errors.Trace(err)
+	}
+
+	return errors.Trace(proto.Unmarshal([]byte(result), value))
+}
+
+func (kv *BooleanKV) Exists() (bool, error) {
+	result, err := kv.db.sess.Exists(kv.key).Result()
+	if err != nil {
+		return false, errors.Trace(err)
+	}
+
+	return result == 1, nil
+}

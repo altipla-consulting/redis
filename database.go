@@ -68,3 +68,10 @@ func (db *Database) Counters(key string) *Counters {
 		key: fmt.Sprintf("%s:%s", db.app, key),
 	}
 }
+
+func (db *Database) BooleanKV(key string) *BooleanKV {
+	return &BooleanKV{
+		db:  db,
+		key: fmt.Sprintf("%s:%s", db.app, key),
+	}
+}

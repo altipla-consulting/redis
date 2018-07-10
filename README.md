@@ -2,8 +2,9 @@
 # redis
 
 [![GoDoc](https://godoc.org/github.com/altipla-consulting/redis?status.svg)](https://godoc.org/github.com/altipla-consulting/redis)
+[![Build Status](https://travis-ci.org/altipla-consulting/redis.svg?branch=master)](https://travis-ci.org/altipla-consulting/redis)
 
-> Abstraction layer to access Redis with repositories and models.
+Abstraction layer to access Redis with repositories and models.
 
 
 ### Install
@@ -14,12 +15,7 @@ go get github.com/altipla-consulting/redis
 
 This library depends on the following ones:
 - [github.com/go-redis/redis](github.com/go-redis/redis)
-- [github.com/juju/errors](github.com/juju/errors)
-- [github.com/golang/protobuf/proto](github.com/golang/protobuf/proto)
-- [github.com/altipla-consulting/sentry](github.com/altipla-consulting/sentry)
-- [github.com/segmentio/ksuid](github.com/segmentio/ksuid)
-- [github.com/sirupsen/logrus](github.com/sirupsen/logrus)
-- [golang.org/x/net/context](golang.org/x/net/context)
+- [github.com/golang/protobuf](github.com/golang/protobuf)
 
 
 ### Usage
@@ -71,21 +67,18 @@ func run() error {
 ```
 
 
-### Queues usage
-
-To use queues effectively a dead-letter queue must be monitorized and cleaned up regularly. For that purpose a new goroutine should be created as soon as possible after starting the application:
-
-```go
-func main() {
-  // Configure a clean-up process with a Sentry notificator.
-  go models.Repo.CloseOffers().CleanUpProcess(config.Settings.Sentry.DSN)
-}
-```
-
-
 ### Contributing
 
 You can make pull requests or create issues in GitHub. Any code you send should be formatted using `gofmt`.
+
+
+### Running tests
+
+Run the tests
+
+```shell
+make test
+```
 
 
 ### License

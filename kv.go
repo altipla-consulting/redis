@@ -96,22 +96,17 @@ type BooleanKV struct {
 	key string
 }
 
-func (kv *BooleanKV) Set(value proto.Message) error {
-	bytes, err := proto.Marshal(value)
-	if err != nil {
-		return errors.Trace(err)
-	}
-
-	return errors.Trace(kv.db.sess.Set(kv.key, string(bytes), 0).Err())
+func (kv *BooleanKV) Set(value bool) error {
+	return errors.Trace(kv.db.sess.Set(kv.key, value, 0).Err())
 }
 
-func (kv *BooleanKV) Get(value proto.Message) error {
+func (kv *BooleanKV) Get() (bool, error) {
 	result, err := kv.db.sess.Get(kv.key).Result()
 	if err != nil {
-		return errors.Trace(err)
+		return false, errors.Trace(err)
 	}
 
-	return errors.Trace(proto.Unmarshal([]byte(result), value))
+	return result, nil
 }
 
 func (kv *BooleanKV) Exists() (bool, error) {

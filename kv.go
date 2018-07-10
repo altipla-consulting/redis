@@ -101,7 +101,7 @@ func (kv *BooleanKV) Set(value bool) error {
 }
 
 func (kv *BooleanKV) Get() (bool, error) {
-	result, err := kv.db.sess.Get(kv.key).Result()
+	result, err := kv.db.sess.Get(kv.key).Boolean()
 	if err != nil {
 		return false, errors.Trace(err)
 	}

@@ -1,6 +1,8 @@
 package redis
 
 import (
+	"strconv"
+
 	"github.com/golang/protobuf/proto"
 	"github.com/juju/errors"
 )
@@ -83,6 +85,33 @@ func (kv *ProtoKV) Get(value proto.Message) error {
 }
 
 func (kv *ProtoKV) Exists() (bool, error) {
+	result, err := kv.db.sess.Exists(kv.key).Result()
+	if err != nil {
+		return false, errors.Trace(err)
+	}
+
+	return result == 1, nil
+}
+
+type BooleanKV struct {
+	db  *Database
+	key string
+}
+
+func (kv *BooleanKV) Set(value bool) error {
+	return errors.Trace(kv.db.sess.Set(kv.key, value, 0).Err())
+}
+
+func (kv *BooleanKV) Get() (bool, error) {
+	result, err := kv.db.sess.Get(kv.key).Result()
+	if err != nil {
+		return false, errors.Trace(err)
+	}
+
+	return strconv.ParseBool(result)
+}
+
+func (kv *BooleanKV) Exists() (bool, error) {
 	result, err := kv.db.sess.Exists(kv.key).Result()
 	if err != nil {
 		return false, errors.Trace(err)

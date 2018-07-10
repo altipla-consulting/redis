@@ -9,7 +9,7 @@ deps:
 	go get -u github.com/mgechev/revive
 
 	go get -u github.com/go-redis/redis
-	go get -u github.com/golang/protobuf
+	go get -u github.com/golang/protobuf/proto
 
 test:
 	revive -formatter friendly

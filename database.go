@@ -53,15 +53,6 @@ func (db *Database) ProtoHash(key string) *ProtoHash {
 	}
 }
 
-// func (db *Database) Queue(key string) *Queue {
-// 	return &Queue{
-// 		db:            db,
-// 		queueKey:      fmt.Sprintf("%s:%s", db.app, key),
-// 		processingKey: fmt.Sprintf("%s:%s:processing", db.app, key),
-// 		tasksKey:      fmt.Sprintf("%s:%s:tasks", db.app, key),
-// 	}
-// }
-
 func (db *Database) Counters(key string) *Counters {
 	return &Counters{
 		db:  db,
@@ -78,4 +69,8 @@ func (db *Database) BooleanKV(key string) *BooleanKV {
 
 func (db *Database) DirectClient() *redis.Client {
 	return db.sess
+}
+
+func (db *Database) FlushAllKeysFromDatabase() error {
+	return db.sess.FlushAll().Err()
 }

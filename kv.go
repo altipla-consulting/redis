@@ -4,6 +4,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/go-redis/redis"
 	"github.com/golang/protobuf/proto"
 	"github.com/juju/errors"
 )
@@ -24,6 +25,10 @@ func (kv *StringKV) SetTTL(value string, ttl time.Duration) error {
 func (kv *StringKV) Get() (string, error) {
 	result, err := kv.db.sess.Get(kv.key).Result()
 	if err != nil {
+		if err == redis.Nil {
+			return "", ErrNoSuchEntity
+		}
+
 		return "", errors.Trace(err)
 	}
 
@@ -55,6 +60,10 @@ func (kv *Int32KV) SetTTL(value int32, ttl time.Duration) error {
 func (kv *Int32KV) Get() (int32, error) {
 	result, err := kv.db.sess.Get(kv.key).Int64()
 	if err != nil {
+		if err == redis.Nil {
+			return 0, ErrNoSuchEntity
+		}
+
 		return 0, errors.Trace(err)
 	}
 
@@ -96,6 +105,10 @@ func (kv *ProtoKV) SetTTL(value proto.Message, ttl time.Duration) error {
 func (kv *ProtoKV) Get(value proto.Message) error {
 	result, err := kv.db.sess.Get(kv.key).Result()
 	if err != nil {
+		if err == redis.Nil {
+			return ErrNoSuchEntity
+		}
+
 		return errors.Trace(err)
 	}
 
@@ -127,6 +140,10 @@ func (kv *BooleanKV) SetTTL(value bool, ttl time.Duration) error {
 func (kv *BooleanKV) Get() (bool, error) {
 	result, err := kv.db.sess.Get(kv.key).Result()
 	if err != nil {
+		if err == redis.Nil {
+			return false, ErrNoSuchEntity
+		}
+
 		return false, errors.Trace(err)
 	}
 

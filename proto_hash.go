@@ -66,7 +66,7 @@ func (hash *ProtoHash) Get(key string, model proto.Message) error {
 	redisResult, err := hash.db.sess.HGet(hash.key, key).Result()
 	if err != nil {
 		if err == redis.Nil {
-			return errors.Trace(ErrNoSuchEntity)
+			return ErrNoSuchEntity
 		}
 
 		return errors.Trace(err)

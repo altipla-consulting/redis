@@ -79,6 +79,41 @@ func (kv *Int32KV) Exists() (bool, error) {
 	return result == 1, nil
 }
 
+type Int64KV struct {
+	db  *Database
+	key string
+}
+
+func (kv *Int64KV) Set(value int64) error {
+	return errors.Trace(kv.db.sess.Set(kv.key, value, 0).Err())
+}
+
+func (kv *Int64KV) SetTTL(value int64, ttl time.Duration) error {
+	return errors.Trace(kv.db.sess.Set(kv.key, value, ttl).Err())
+}
+
+func (kv *Int64KV) Get() (int64, error) {
+	result, err := kv.db.sess.Get(kv.key).Int64()
+	if err != nil {
+		if err == redis.Nil {
+			return 0, ErrNoSuchEntity
+		}
+
+		return 0, errors.Trace(err)
+	}
+
+	return int64(result), nil
+}
+
+func (kv *Int64KV) Exists() (bool, error) {
+	result, err := kv.db.sess.Exists(kv.key).Result()
+	if err != nil {
+		return false, errors.Trace(err)
+	}
+
+	return result == 1, nil
+}
+
 type ProtoKV struct {
 	db  *Database
 	key string

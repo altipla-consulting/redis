@@ -44,6 +44,10 @@ func (kv *StringKV) Exists() (bool, error) {
 	return result == 1, nil
 }
 
+func (kv *StringKV) Delete() error {
+	return errors.Trace(kv.db.sess.Del(kv.key).Err())
+}
+
 type Int32KV struct {
 	db  *Database
 	key string
@@ -79,6 +83,10 @@ func (kv *Int32KV) Exists() (bool, error) {
 	return result == 1, nil
 }
 
+func (kv *Int32KV) Delete() error {
+	return errors.Trace(kv.db.sess.Del(kv.key).Err())
+}
+
 type Int64KV struct {
 	db  *Database
 	key string
@@ -112,6 +120,10 @@ func (kv *Int64KV) Exists() (bool, error) {
 	}
 
 	return result == 1, nil
+}
+
+func (kv *Int64KV) Delete() error {
+	return errors.Trace(kv.db.sess.Del(kv.key).Err())
 }
 
 type ProtoKV struct {
@@ -159,6 +171,10 @@ func (kv *ProtoKV) Exists() (bool, error) {
 	return result == 1, nil
 }
 
+func (kv *ProtoKV) Delete() error {
+	return errors.Trace(kv.db.sess.Del(kv.key).Err())
+}
+
 type BooleanKV struct {
 	db  *Database
 	key string
@@ -192,4 +208,8 @@ func (kv *BooleanKV) Exists() (bool, error) {
 	}
 
 	return result == 1, nil
+}
+
+func (kv *BooleanKV) Delete() error {
+	return errors.Trace(kv.db.sess.Del(kv.key).Err())
 }

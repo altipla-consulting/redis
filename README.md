@@ -29,7 +29,6 @@ import (
   "fmt"
 
   "github.com/altipla-consulting/redis"
-  "github.com/juju/errors"
 )
 
 var Repo *MainDatabase
@@ -61,7 +60,7 @@ Usage:
 func run() error {
   offers := []*pbmodels.Offer{}
   if err := models.Repo.Offers(in.Hotel).GetMulti(codes, &offers); err != nil {
-    return errors.Trace(err)
+    return err
   }
 }
 ```

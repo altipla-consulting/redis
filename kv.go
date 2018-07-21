@@ -6,7 +6,6 @@ import (
 
 	"github.com/go-redis/redis"
 	"github.com/golang/protobuf/proto"
-	"github.com/juju/errors"
 )
 
 type StringKV struct {
@@ -15,11 +14,11 @@ type StringKV struct {
 }
 
 func (kv *StringKV) Set(value string) error {
-	return errors.Trace(kv.db.sess.Set(kv.key, value, 0).Err())
+	return kv.db.sess.Set(kv.key, value, 0).Err()
 }
 
 func (kv *StringKV) SetTTL(value string, ttl time.Duration) error {
-	return errors.Trace(kv.db.sess.Set(kv.key, value, ttl).Err())
+	return kv.db.sess.Set(kv.key, value, ttl).Err()
 }
 
 func (kv *StringKV) Get() (string, error) {
@@ -29,7 +28,7 @@ func (kv *StringKV) Get() (string, error) {
 			return "", ErrNoSuchEntity
 		}
 
-		return "", errors.Trace(err)
+		return "", err
 	}
 
 	return result, nil
@@ -38,14 +37,14 @@ func (kv *StringKV) Get() (string, error) {
 func (kv *StringKV) Exists() (bool, error) {
 	result, err := kv.db.sess.Exists(kv.key).Result()
 	if err != nil {
-		return false, errors.Trace(err)
+		return false, err
 	}
 
 	return result == 1, nil
 }
 
 func (kv *StringKV) Delete() error {
-	return errors.Trace(kv.db.sess.Del(kv.key).Err())
+	return kv.db.sess.Del(kv.key).Err()
 }
 
 type Int32KV struct {
@@ -54,11 +53,11 @@ type Int32KV struct {
 }
 
 func (kv *Int32KV) Set(value int32) error {
-	return errors.Trace(kv.db.sess.Set(kv.key, value, 0).Err())
+	return kv.db.sess.Set(kv.key, value, 0).Err()
 }
 
 func (kv *Int32KV) SetTTL(value int32, ttl time.Duration) error {
-	return errors.Trace(kv.db.sess.Set(kv.key, value, ttl).Err())
+	return kv.db.sess.Set(kv.key, value, ttl).Err()
 }
 
 func (kv *Int32KV) Get() (int32, error) {
@@ -68,7 +67,7 @@ func (kv *Int32KV) Get() (int32, error) {
 			return 0, ErrNoSuchEntity
 		}
 
-		return 0, errors.Trace(err)
+		return 0, err
 	}
 
 	return int32(result), nil
@@ -77,14 +76,14 @@ func (kv *Int32KV) Get() (int32, error) {
 func (kv *Int32KV) Exists() (bool, error) {
 	result, err := kv.db.sess.Exists(kv.key).Result()
 	if err != nil {
-		return false, errors.Trace(err)
+		return false, err
 	}
 
 	return result == 1, nil
 }
 
 func (kv *Int32KV) Delete() error {
-	return errors.Trace(kv.db.sess.Del(kv.key).Err())
+	return kv.db.sess.Del(kv.key).Err()
 }
 
 type Int64KV struct {
@@ -93,11 +92,11 @@ type Int64KV struct {
 }
 
 func (kv *Int64KV) Set(value int64) error {
-	return errors.Trace(kv.db.sess.Set(kv.key, value, 0).Err())
+	return kv.db.sess.Set(kv.key, value, 0).Err()
 }
 
 func (kv *Int64KV) SetTTL(value int64, ttl time.Duration) error {
-	return errors.Trace(kv.db.sess.Set(kv.key, value, ttl).Err())
+	return kv.db.sess.Set(kv.key, value, ttl).Err()
 }
 
 func (kv *Int64KV) Get() (int64, error) {
@@ -107,7 +106,7 @@ func (kv *Int64KV) Get() (int64, error) {
 			return 0, ErrNoSuchEntity
 		}
 
-		return 0, errors.Trace(err)
+		return 0, err
 	}
 
 	return int64(result), nil
@@ -116,14 +115,14 @@ func (kv *Int64KV) Get() (int64, error) {
 func (kv *Int64KV) Exists() (bool, error) {
 	result, err := kv.db.sess.Exists(kv.key).Result()
 	if err != nil {
-		return false, errors.Trace(err)
+		return false, err
 	}
 
 	return result == 1, nil
 }
 
 func (kv *Int64KV) Delete() error {
-	return errors.Trace(kv.db.sess.Del(kv.key).Err())
+	return kv.db.sess.Del(kv.key).Err()
 }
 
 type ProtoKV struct {
@@ -134,19 +133,19 @@ type ProtoKV struct {
 func (kv *ProtoKV) Set(value proto.Message) error {
 	bytes, err := proto.Marshal(value)
 	if err != nil {
-		return errors.Trace(err)
+		return err
 	}
 
-	return errors.Trace(kv.db.sess.Set(kv.key, string(bytes), 0).Err())
+	return kv.db.sess.Set(kv.key, string(bytes), 0).Err()
 }
 
 func (kv *ProtoKV) SetTTL(value proto.Message, ttl time.Duration) error {
 	bytes, err := proto.Marshal(value)
 	if err != nil {
-		return errors.Trace(err)
+		return err
 	}
 
-	return errors.Trace(kv.db.sess.Set(kv.key, string(bytes), ttl).Err())
+	return kv.db.sess.Set(kv.key, string(bytes), ttl).Err()
 }
 
 func (kv *ProtoKV) Get(value proto.Message) error {
@@ -156,23 +155,23 @@ func (kv *ProtoKV) Get(value proto.Message) error {
 			return ErrNoSuchEntity
 		}
 
-		return errors.Trace(err)
+		return err
 	}
 
-	return errors.Trace(proto.Unmarshal([]byte(result), value))
+	return proto.Unmarshal([]byte(result), value)
 }
 
 func (kv *ProtoKV) Exists() (bool, error) {
 	result, err := kv.db.sess.Exists(kv.key).Result()
 	if err != nil {
-		return false, errors.Trace(err)
+		return false, err
 	}
 
 	return result == 1, nil
 }
 
 func (kv *ProtoKV) Delete() error {
-	return errors.Trace(kv.db.sess.Del(kv.key).Err())
+	return kv.db.sess.Del(kv.key).Err()
 }
 
 type BooleanKV struct {
@@ -181,11 +180,11 @@ type BooleanKV struct {
 }
 
 func (kv *BooleanKV) Set(value bool) error {
-	return errors.Trace(kv.db.sess.Set(kv.key, value, 0).Err())
+	return kv.db.sess.Set(kv.key, value, 0).Err()
 }
 
 func (kv *BooleanKV) SetTTL(value bool, ttl time.Duration) error {
-	return errors.Trace(kv.db.sess.Set(kv.key, value, ttl).Err())
+	return kv.db.sess.Set(kv.key, value, ttl).Err()
 }
 
 func (kv *BooleanKV) Get() (bool, error) {
@@ -195,7 +194,7 @@ func (kv *BooleanKV) Get() (bool, error) {
 			return false, ErrNoSuchEntity
 		}
 
-		return false, errors.Trace(err)
+		return false, err
 	}
 
 	return strconv.ParseBool(result)
@@ -204,12 +203,12 @@ func (kv *BooleanKV) Get() (bool, error) {
 func (kv *BooleanKV) Exists() (bool, error) {
 	result, err := kv.db.sess.Exists(kv.key).Result()
 	if err != nil {
-		return false, errors.Trace(err)
+		return false, err
 	}
 
 	return result == 1, nil
 }
 
 func (kv *BooleanKV) Delete() error {
-	return errors.Trace(kv.db.sess.Del(kv.key).Err())
+	return kv.db.sess.Del(kv.key).Err()
 }

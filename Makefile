@@ -11,9 +11,6 @@ deps:
 	go get -u github.com/go-redis/redis
 	go get -u github.com/golang/protobuf/proto
 
-	# TODO(ernesto): Remove this dependency.
-	go get -u github.com/juju/errors
-
 test:
 	revive -formatter friendly
 	go install .

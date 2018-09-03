@@ -100,19 +100,9 @@ func (set *Int64Set) Remove(values ...int64) error {
 }
 
 func (set *Int64Set) SortAlpha() ([]int64, error) {
-	rawResult, err := set.sort(&redis.Sort{Alpha: true})
+	result, err := set.sort(&redis.Sort{Alpha: true})
 	if err != nil {
 		return nil, err
-	}
-
-	result := []int64{}
-	for _, r := range rawResult {
-		n, err := strconv.ParseInt(r, 10, 64)
-		if err != nil {
-			return nil, err
-		}
-
-		result = append(result, n)
 	}
 
 	return result, nil

@@ -75,8 +75,8 @@ func (hash *ProtoHash) Get(key string, model proto.Message) error {
 	return proto.Unmarshal([]byte(redisResult), model)
 }
 
-func (hash *ProtoHash) Delete(key string) {
-	hash.db.sess.HDel(hash.key, key)
+func (hash *ProtoHash) Delete(key string) error {
+	return hash.db.sess.HDel(hash.key, key).Err()
 }
 
 type ProtoHashInsert struct {

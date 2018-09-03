@@ -27,6 +27,13 @@ func (db *Database) StringsSet(key string) *StringsSet {
 	}
 }
 
+func (db *Database) Int64Set(key string) *Int64Set {
+	return &Int64Set{
+		db:  db,
+		key: fmt.Sprintf("%s:%s", db.app, key),
+	}
+}
+
 func (db *Database) StringKV(key string) *StringKV {
 	return &StringKV{
 		db:  db,

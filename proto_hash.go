@@ -75,17 +75,8 @@ func (hash *ProtoHash) Get(key string, model proto.Message) error {
 	return proto.Unmarshal([]byte(redisResult), model)
 }
 
-func (hash *ProtoHash) Delete(key string) error {
-	redisResult, err := hash.db.sess.HDel(hash.key, key).Result()
-	if err != nil {
-		if err == redis.Nil {
-			return ErrNoSuchEntity
-		}
-
-		return err
-	}
-
-	return nil
+func (hash *ProtoHash) Delete(key string) {
+	hash.db.sess.HDel(hash.key, key)
 }
 
 type ProtoHashInsert struct {

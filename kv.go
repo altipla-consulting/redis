@@ -212,3 +212,57 @@ func (kv *BooleanKV) Exists() (bool, error) {
 func (kv *BooleanKV) Delete() error {
 	return kv.db.sess.Del(kv.key).Err()
 }
+
+type TimeKV struct {
+	db  *Database
+	key string
+}
+
+func (kv *TimeKV) Set(value time.Time) error {
+	rawValue, err := value.MarshalText()
+	if err != nil {
+		return err
+	}
+
+	return kv.db.sess.Set(kv.key, string(rawValue), 0).Err()
+}
+
+func (kv *TimeKV) SetTTL(value time.Time, ttl time.Duration) error {
+	rawValue, err := value.MarshalText()
+	if err != nil {
+		return err
+	}
+
+	return kv.db.sess.Set(kv.key, string(rawValue), ttl).Err()
+}
+
+func (kv *TimeKV) Get() (time.Time, error) {
+	rawResult, err := kv.db.sess.Get(kv.key).Result()
+	if err != nil {
+		if err == redis.Nil {
+			return time.Time{}, ErrNoSuchEntity
+		}
+
+		return time.Time{}, err
+	}
+
+	result := time.Time{}
+	if err := result.UnmarshalText([]byte(rawResult)); err != nil {
+		return time.Time{}, err
+	}
+
+	return result, nil
+}
+
+func (kv *TimeKV) Exists() (bool, error) {
+	result, err := kv.db.sess.Exists(kv.key).Result()
+	if err != nil {
+		return false, err
+	}
+
+	return result == 1, nil
+}
+
+func (kv *TimeKV) Delete() error {
+	return kv.db.sess.Del(kv.key).Err()
+}

@@ -4,12 +4,12 @@ import (
 	"github.com/go-redis/redis"
 )
 
-type Set struct {
+type StringsSet struct {
 	db  *Database
 	key string
 }
 
-func (set *Set) Members() ([]string, error) {
+func (set *StringsSet) Members() ([]string, error) {
 	result, err := set.db.sess.SMembers(set.key).Result()
 	if err != nil {
 		return nil, err
@@ -18,7 +18,7 @@ func (set *Set) Members() ([]string, error) {
 	return result, nil
 }
 
-func (set *Set) Add(values ...string) error {
+func (set *StringsSet) Add(values ...string) error {
 	members := make([]interface{}, len(values))
 	for i := range values {
 		members[i] = values[i]
@@ -27,7 +27,7 @@ func (set *Set) Add(values ...string) error {
 	return set.db.sess.SAdd(set.key, members...).Err()
 }
 
-func (set *Set) Remove(values ...string) error {
+func (set *StringsSet) Remove(values ...string) error {
 	members := make([]interface{}, len(values))
 	for i := range values {
 		members[i] = values[i]
@@ -36,7 +36,7 @@ func (set *Set) Remove(values ...string) error {
 	return set.db.sess.SRem(set.key, members...).Err()
 }
 
-func (set *Set) SortAlpha() ([]string, error) {
+func (set *StringsSet) SortAlpha() ([]string, error) {
 	result, err := set.sort(&redis.Sort{Alpha: true})
 	if err != nil {
 		return nil, err
@@ -45,7 +45,7 @@ func (set *Set) SortAlpha() ([]string, error) {
 	return result, nil
 }
 
-func (set *Set) sort(sort *redis.Sort) ([]string, error) {
+func (set *StringsSet) sort(sort *redis.Sort) ([]string, error) {
 	result, err := set.db.sess.Sort(set.key, sort).Result()
 	if err != nil {
 		return nil, err

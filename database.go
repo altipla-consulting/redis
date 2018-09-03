@@ -20,8 +20,8 @@ func Open(hostname, applicationName string) *Database {
 	}
 }
 
-func (db *Database) Set(key string) *Set {
-	return &Set{
+func (db *Database) StringsSet(key string) *StringsSet {
+	return &StringsSet{
 		db:  db,
 		key: fmt.Sprintf("%s:%s", db.app, key),
 	}

@@ -224,7 +224,7 @@ func (kv *TimeKV) Set(value time.Time) error {
 		return err
 	}
 
-	return kv.db.sess.Set(kv.key, rawValue, 0).Err()
+	return kv.db.sess.Set(kv.key, string(rawValue), 0).Err()
 }
 
 func (kv *TimeKV) SetTTL(value time.Time, ttl time.Duration) error {
@@ -233,7 +233,7 @@ func (kv *TimeKV) SetTTL(value time.Time, ttl time.Duration) error {
 		return err
 	}
 
-	return kv.db.sess.Set(kv.key, rawValue, ttl).Err()
+	return kv.db.sess.Set(kv.key, string(rawValue), ttl).Err()
 }
 
 func (kv *TimeKV) Get() (time.Time, error) {
@@ -247,7 +247,7 @@ func (kv *TimeKV) Get() (time.Time, error) {
 	}
 
 	result := time.Time{}
-	if err := result.UnmarshalText(rawResult); err != nil {
+	if err := result.UnmarshalText([]byte(rawResult)); err != nil {
 		return time.Time{}, err
 	}
 

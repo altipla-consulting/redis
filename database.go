@@ -76,6 +76,13 @@ func (db *Database) BooleanKV(key string) *BooleanKV {
 	}
 }
 
+func (db *Database) TimeKV(key string) *TimeKV {
+	return &TimeKV{
+		db:  db,
+		key: fmt.Sprintf("%s:%s", db.app, key),
+	}
+}
+
 // DirectClient returns the underlying client of go-redis to call advanced
 // methods not exposed through this library. Please consider to add the functionality
 // here after it's tested to improve all the users of the library.

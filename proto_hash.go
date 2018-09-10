@@ -23,6 +23,10 @@ func (hash *ProtoHash) PrepareInsert() *ProtoHashInsert {
 // GetMulti fetchs a list of keys from the hash. Result should be a slice of proto.Message
 // that will be filled with the results in the same order as the keys.
 func (hash *ProtoHash) GetMulti(keys []string, result interface{}) error {
+	if len(keys) == 0 {
+		return nil
+	}
+	
 	rt := reflect.TypeOf(result)
 	rv := reflect.ValueOf(result)
 	msg := reflect.TypeOf((*proto.Message)(nil)).Elem()

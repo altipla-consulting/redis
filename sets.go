@@ -12,6 +12,10 @@ type StringsSet struct {
 	key string
 }
 
+func (set *StringsSet) Len() (int64, error) {
+	return set.db.sess.SCard(set.key).Result()
+}
+
 func (set *StringsSet) Members() ([]string, error) {
 	result, err := set.db.sess.SMembers(set.key).Result()
 	if err != nil {
@@ -60,6 +64,10 @@ func (set *StringsSet) sort(sort *redis.Sort) ([]string, error) {
 type Int64Set struct {
 	db  *Database
 	key string
+}
+
+func (set *Int64Set) Len() (int64, error) {
+	return set.db.sess.SCard(set.key).Result()
 }
 
 func (set *Int64Set) Members() ([]int64, error) {

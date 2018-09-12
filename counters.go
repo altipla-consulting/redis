@@ -2,6 +2,8 @@ package redis
 
 import (
 	"fmt"
+
+	"github.com/go-redis/redis"
 )
 
 type Counters struct {
@@ -28,6 +30,10 @@ func (c *Counter) Set(value int64) error {
 func (c *Counter) Get() (int64, error) {
 	result, err := c.db.sess.Get(c.key).Int64()
 	if err != nil {
+		if err == redis.Nil {
+			return 0, nil
+		}
+
 		return 0, err
 	}
 

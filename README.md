@@ -13,10 +13,6 @@ Abstraction layer to access Redis with repositories and models.
 go get github.com/altipla-consulting/redis
 ```
 
-This library depends on the following ones:
-- [github.com/go-redis/redis](github.com/go-redis/redis)
-- [github.com/golang/protobuf](github.com/golang/protobuf)
-
 
 ### Usage
 

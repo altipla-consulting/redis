@@ -26,7 +26,7 @@ func (hash *ProtoHash) GetMulti(keys []string, result interface{}) error {
 	if len(keys) == 0 {
 		return nil
 	}
-	
+
 	rt := reflect.TypeOf(result)
 	rv := reflect.ValueOf(result)
 	msg := reflect.TypeOf((*proto.Message)(nil)).Elem()

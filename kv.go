@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/go-redis/redis"
+	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/proto"
 )
 
@@ -125,29 +126,29 @@ func (kv *Int64KV) Delete() error {
 	return kv.db.sess.Del(kv.key).Err()
 }
 
+// ProtoKV interacts with a protobuf value key.
 type ProtoKV struct {
 	db  *Database
 	key string
 }
 
+// Set changes the value of the key.
 func (kv *ProtoKV) Set(value proto.Message) error {
-	bytes, err := proto.Marshal(value)
-	if err != nil {
-		return err
-	}
-
-	return kv.db.sess.Set(kv.key, string(bytes), 0).Err()
+	return kv.SetTTL(value, 0)
 }
 
+// SetTTL changes the value of the key with a Time-To-Live.
 func (kv *ProtoKV) SetTTL(value proto.Message, ttl time.Duration) error {
-	bytes, err := proto.Marshal(value)
+	m := new(jsonpb.Marshaler)
+	encoded, err := m.MarshalToString(value)
 	if err != nil {
 		return err
 	}
 
-	return kv.db.sess.Set(kv.key, string(bytes), ttl).Err()
+	return kv.db.sess.Set(kv.key, encoded, ttl).Err()
 }
 
+// Get decodes the value in the provided message.
 func (kv *ProtoKV) Get(value proto.Message) error {
 	result, err := kv.db.sess.Get(kv.key).Result()
 	if err != nil {
@@ -158,9 +159,14 @@ func (kv *ProtoKV) Get(value proto.Message) error {
 		return err
 	}
 
+	if result[0] == '{' {
+		return jsonpb.UnmarshalString(result, value)
+	}
+
 	return proto.Unmarshal([]byte(result), value)
 }
 
+// Exists checks if the key exists previously.
 func (kv *ProtoKV) Exists() (bool, error) {
 	result, err := kv.db.sess.Exists(kv.key).Result()
 	if err != nil {
@@ -170,6 +176,7 @@ func (kv *ProtoKV) Exists() (bool, error) {
 	return result == 1, nil
 }
 
+// Delete the key.
 func (kv *ProtoKV) Delete() error {
 	return kv.db.sess.Del(kv.key).Err()
 }

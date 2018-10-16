@@ -159,11 +159,7 @@ func (kv *ProtoKV) Get(value proto.Message) error {
 		return err
 	}
 
-	if result[0] == '{' {
-		return jsonpb.UnmarshalString(result, value)
-	}
-
-	return proto.Unmarshal([]byte(result), value)
+	return unmarshalProto(result, value)
 }
 
 // Exists checks if the key exists previously.

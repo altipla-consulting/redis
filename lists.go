@@ -7,6 +7,27 @@ import (
 	"github.com/golang/protobuf/proto"
 )
 
+type StringsList struct {
+	db  *Database
+	key string
+}
+
+func (list *StringsList) Len() (int64, error) {
+	return list.db.sess.LLen(list.key).Result()
+}
+
+func (list *StringsList) GetRange(start, end int64) ([]string, error) {
+	return list.db.sess.LRange(list.key, start, end).Result()
+}
+
+func (list *StringsList) GetAll() ([]string, error) {
+	return list.GetRange(0, -1)
+}
+
+func (list *StringsList) Add(values []string) error {
+	return list.db.sess.LPush(list.key, values).Err()
+}
+
 type ProtoList struct {
 	db  *Database
 	key string
@@ -16,7 +37,7 @@ func (list *ProtoList) Len() (int64, error) {
 	return list.db.sess.LLen(list.key).Result()
 }
 
-func (list *ProtoList) GetAll(result interface{}) error {
+func (list *ProtoList) GetRange(start, end int64, result interface{}) error {
 	rt := reflect.TypeOf(result)
 	rv := reflect.ValueOf(result)
 	msg := reflect.TypeOf((*proto.Message)(nil)).Elem()
@@ -26,7 +47,7 @@ func (list *ProtoList) GetAll(result interface{}) error {
 
 	dest := reflect.MakeSlice(rt.Elem(), 0, 0)
 
-	redisResult, err := list.db.sess.LRange(list.key, 0, -1).Result()
+	redisResult, err := list.db.sess.LRange(list.key, start, end).Result()
 	if err != nil {
 		return err
 	}
@@ -42,6 +63,10 @@ func (list *ProtoList) GetAll(result interface{}) error {
 	rv.Elem().Set(dest)
 
 	return nil
+}
+
+func (list *ProtoList) GetAll(result interface{}) error {
+	return list.GetRange(0, -1, result)
 }
 
 func (list *ProtoList) Add(values ...proto.Message) error {

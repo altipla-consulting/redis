@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"reflect"
 
+	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/proto"
 )
 
@@ -53,7 +54,7 @@ func (list *ProtoList) GetRange(start, end int64, result interface{}) error {
 	}
 	for _, item := range redisResult {
 		value := reflect.New(rt.Elem().Elem().Elem())
-		if err := proto.Unmarshal([]byte(item), value.Interface().(proto.Message)); err != nil {
+		if err := unmarshalProto(item, value.Interface().(proto.Message)); err != nil {
 			return err
 		}
 
@@ -70,14 +71,15 @@ func (list *ProtoList) GetAll(result interface{}) error {
 }
 
 func (list *ProtoList) Add(values ...proto.Message) error {
+	m := new(jsonpb.Marshaler)
 	members := make([]interface{}, len(values))
 	for i, value := range values {
-		bytes, err := proto.Marshal(value)
+		encoded, err := m.MarshalToString(value)
 		if err != nil {
 			return err
 		}
 
-		members[i] = string(bytes)
+		members[i] = encoded
 	}
 
 	return list.db.sess.LPush(list.key, members...).Err()

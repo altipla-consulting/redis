@@ -50,7 +50,7 @@ func (hash *ProtoHash) GetMulti(keys []string, result interface{}) error {
 			merr = append(merr, ErrNoSuchEntity)
 		} else {
 			model = reflect.New(rt.Elem().Elem().Elem())
-			if err := unmarshal(item.(string), model.Interface().(proto.Message)); err != nil {
+			if err := unmarshalProtoHash(item.(string), model.Interface().(proto.Message)); err != nil {
 				return err
 			}
 			merr = append(merr, nil)
@@ -77,14 +77,14 @@ func (hash *ProtoHash) Get(key string, model proto.Message) error {
 		return err
 	}
 
-	return unmarshal(redisResult, model)
+	return unmarshalProtoHash(redisResult, model)
 }
 
 func (hash *ProtoHash) Delete(key string) error {
 	return hash.db.sess.HDel(hash.key, key).Err()
 }
 
-func unmarshal(raw string, model proto.Message) error {
+func unmarshalProtoHash(raw string, model proto.Message) error {
 	if raw[0] == '{' {
 		return jsonpb.UnmarshalString(raw, model)
 	}

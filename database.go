@@ -97,6 +97,13 @@ func (db *Database) ProtoList(key string) *ProtoList {
 	}
 }
 
+func (db *Database) StringsList(key string) *StringsList {
+	return &StringsList{
+		db:  db,
+		key: fmt.Sprintf("%s:%s", db.app, key),
+	}
+}
+
 // DirectClient returns the underlying client of go-redis to call advanced
 // methods not exposed through this library. Please consider to add the functionality
 // here after it's tested to improve all the users of the library.

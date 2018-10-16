@@ -5,6 +5,7 @@ import (
 	"reflect"
 
 	"github.com/go-redis/redis"
+	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/proto"
 )
 
@@ -49,7 +50,7 @@ func (hash *ProtoHash) GetMulti(keys []string, result interface{}) error {
 			merr = append(merr, ErrNoSuchEntity)
 		} else {
 			model = reflect.New(rt.Elem().Elem().Elem())
-			if err := proto.Unmarshal([]byte(item.(string)), model.Interface().(proto.Message)); err != nil {
+			if err := unmarshalProtoHash(item.(string), model.Interface().(proto.Message)); err != nil {
 				return err
 			}
 			merr = append(merr, nil)
@@ -76,11 +77,19 @@ func (hash *ProtoHash) Get(key string, model proto.Message) error {
 		return err
 	}
 
-	return proto.Unmarshal([]byte(redisResult), model)
+	return unmarshalProtoHash(redisResult, model)
 }
 
 func (hash *ProtoHash) Delete(key string) error {
 	return hash.db.sess.HDel(hash.key, key).Err()
+}
+
+func unmarshalProtoHash(raw string, model proto.Message) error {
+	if raw[0] == '{' {
+		return jsonpb.UnmarshalString(raw, model)
+	}
+
+	return proto.Unmarshal([]byte(raw), model)
 }
 
 type ProtoHashInsert struct {
@@ -89,12 +98,13 @@ type ProtoHashInsert struct {
 }
 
 func (insert *ProtoHashInsert) Set(key string, value proto.Message) error {
-	bytes, err := proto.Marshal(value)
+	m := new(jsonpb.Marshaler)
+	encoded, err := m.MarshalToString(value)
 	if err != nil {
 		return err
 	}
 
-	insert.fields[key] = string(bytes)
+	insert.fields[key] = encoded
 
 	return nil
 }

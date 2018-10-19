@@ -88,3 +88,13 @@ func (list *ProtoList) Add(values ...proto.Message) error {
 
 	return list.db.sess.LPush(list.key, members...).Err()
 }
+
+func (list *ProtoList) Remove(value proto.Message) error {
+	m := new(jsonpb.Marshaler)
+	encoded, err := m.MarshalToString(value)
+	if err != nil {
+		return err
+	}
+
+	return list.db.sess.LRem(list.key, 1, encoded).Err()
+}

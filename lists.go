@@ -29,6 +29,10 @@ func (list *StringsList) Add(values []string) error {
 	return list.db.sess.LPush(list.key, values).Err()
 }
 
+func (list *StringsList) Remove(value string) error {
+	return list.db.sess.LRem(list.key, 1, value).Err()
+}
+
 type ProtoList struct {
 	db  *Database
 	key string

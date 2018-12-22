@@ -117,3 +117,12 @@ func (db *Database) DirectClient() *redis.Client {
 func (db *Database) FlushAllKeysFromDatabase() error {
 	return db.sess.FlushAll().Err()
 }
+
+// PubSub returns an entrypoint to a PubSub queue in redisIt can be used to publish
+// and receive protobuf messages.
+func (db *Database) PubSub(name string) *PubSub {
+	return &PubSub{
+		db:   db,
+		name: name,
+	}
+}

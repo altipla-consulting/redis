@@ -31,7 +31,7 @@ func (pubsub *PubSub) Publish(msg proto.Message) error {
 	if err != nil {
 		return fmt.Errorf("redis: cannot serialize pubsub message: %v", err)
 	}
-	if err := pubsub.db.sess.Publish(pubsub.name, serialized); err != nil {
+	if err := pubsub.db.sess.Publish(pubsub.name, string(serialized)); err != nil {
 		return fmt.Errorf("redis: cannot publish pubsub message: %v", err)
 	}
 	return nil
